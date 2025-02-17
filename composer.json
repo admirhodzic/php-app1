@@ -1,0 +1,10 @@
+{
+    "name": "admir/php-app1",
+    "authors": [
+        {
+            "name": "Admir Hodžić",
+            "email": "admirhodzic@bih.net.ba"
+        }
+    ],
+    "require": {}
+}
