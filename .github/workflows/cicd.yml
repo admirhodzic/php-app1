@@ -73,4 +73,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
-          images: ${{ env.IMAGE_NAME }}:$GITHUB_SHA
+          images: ${{ env.IMAGE_NAME }}:${{ env.GITHUB_SHA }}
