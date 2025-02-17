@@ -29,6 +29,14 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, pdo_mysql
           coverage: none
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
       - name: Install dependencies
         run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
@@ -41,6 +49,9 @@ jobs:
   build-and-deploy:
     name: Build & Deploy to Azure
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     needs: build-and-test
     if: github.ref == 'refs/heads/main'
 
