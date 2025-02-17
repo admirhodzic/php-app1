@@ -9,9 +9,9 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: my-php-app  # Replace with your Azure Web App name
+  AZURE_WEBAPP_NAME: php-app1  # Replace with your Azure Web App name
   GHCR_REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository }}/php-app
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/php-app1
 
 jobs:
   build-and-test:
@@ -36,7 +36,7 @@ jobs:
         run: find src -type f -name "*.php" -exec php -l {} \;
 
       - name: Run Tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit src
 
   build-and-deploy:
     name: Build & Deploy to Azure
