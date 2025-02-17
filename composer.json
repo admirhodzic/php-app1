@@ -6,5 +6,7 @@
             "email": "admirhodzic@bih.net.ba"
         }
     ],
-    "require": {}
+    "require": {
+        "phpunit/phpunit": "^9.6"
+    }
 }

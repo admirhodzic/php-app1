@@ -1,4 +1,4 @@
-name: PHP CI/CD to Azure
+name: PHP CI/CD to Azure (Using GHCR)
 
 on:
   push:
@@ -9,9 +9,9 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: my-php-app   # Replace with your Azure Web App name
-  AZURE_CONTAINER_REGISTRY: myacr.azurecr.io  # Replace with your Azure Container Registry URL
-  IMAGE_NAME: php-app
+  AZURE_WEBAPP_NAME: my-php-app  # Replace with your Azure Web App name
+  GHCR_REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/php-app
 
 jobs:
   build-and-test:
@@ -30,7 +30,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
       - name: Run PHP Lint
         run: find src -type f -name "*.php" -exec php -l {} \;
@@ -48,17 +48,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to Azure Container Registry
-        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login $AZURE_CONTAINER_REGISTRY -u ${{ secrets.ACR_USERNAME }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:latest .
+        run: docker build -t $IMAGE_NAME:latest .
 
-      - name: Push Docker Image to ACR
-        run: docker push $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:latest
+      - name: Push Docker Image to GHCR
+        run: docker push $IMAGE_NAME:latest
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          images: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          images: ${{ env.IMAGE_NAME }}:latest
